@@ -1,0 +1,49 @@
+body { font-family: sans-serif; margin: 0; background: #f0f2f5; padding-top: 60px; }
+
+/* Navigație Fixă Sus */
+nav { 
+    position: fixed; top: 0; width: 100%; height: 50px;
+    background: #2c3e50; display: flex; align-items: center; 
+    justify-content: flex-start; gap: 10px; /* spațiu între butoane */
+    padding-left: 10px; /* puțin spațiu de la margine */
+    z-index: 1000; 
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+nav button { color: white; background: transparent; border: 1px solid #fff; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+nav button:hover { background: #1abc9c; }
+
+/* Cap de pagină fix (Titlu + Formular) */
+.sticky-header {
+    position: sticky; top: 50px; background: #fff;
+    padding: 10px 20px; z-index: 900; border-bottom: 2px solid #ddd;
+}
+
+.tab-content { display: none; padding-bottom: 50px; }
+.active { display: block; }
+
+form { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-top: 10px; }
+.input-group { grid-column: 1 / -1; display: flex; gap: 10px; flex-wrap: wrap; background: #f9f9f9; padding: 5px; border-radius: 4px; }
+.input-group label { font-size: 11px; font-weight: bold; }
+
+input, select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+.btn-save { background: #27ae60; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+
+/* Tabel responsiv */
+.table-container { overflow-x: auto; padding: 10px; }
+table { width: 100%; border-collapse: collapse; background: white; min-width: 900px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 12px; }
+th { background: #eee; position: sticky; top: 0; }
+
+.expirat-red { background-color: #ffcccc !important; }
+.expira-curand-yellow { background-color: #fff3cd !important; }
+
+/* Telefon */
+@media (max-width: 600px) {
+    body { padding-top: 50px; }
+    .sticky-header { padding: 10px; }
+    form { grid-template-columns: 1fr 1fr; }
+    .btn-save { grid-column: span 2; }
+    .sticky-header h2 { font-size: 16px; margin: 0; }
+}
+
+@media print { .no-print, nav, .sticky-header { display: none !important; } .tab-content { display: block !important; } .semnaturi-zona { display: flex; justify-content: space-between; margin-top: 50px; } }

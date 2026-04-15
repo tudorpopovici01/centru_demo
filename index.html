@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestiune Magazie - Căldura Casei</title>
+    <link rel="stylesheet" href="style.css">
+   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cloudflare.com"></script>
+</head>
+<body>
+
+<nav class="no-print">
+    <button onclick="showPage('pagina-primite')">📦 Stoc</button>
+    <button onclick="showPage('pagina-consumate')">🍽️ Consum</button>
+    <button onclick="showPage('pagina-rapoarte')">📊 Rapoarte</button>
+</nav>
+
+<!-- PAGINA 1: STOC -->
+<div id="pagina-primite" class="tab-content active">
+    <div class="sticky-header">
+        <h2>📦 Gestiune Stoc</h2>
+        <form id="formPrimite">
+            <input type="hidden" id="edit_id">
+            <input type="text" id="p_id" placeholder="ID Produs" required>
+            <input type="text" id="p_nume" placeholder="Denumire" required>
+            <input type="text" id="p_furnizor" placeholder="Furnizor">
+            <div class="input-group">
+                <label>Primire: <input type="date" id="p_data" required></label>
+                <label>Producere: <input type="date" id="p_producere"></label>
+                <label>Expirare: <input type="date" id="p_expirare" required></label>
+            </div>
+            <input type="number" id="p_cantitate" placeholder="Cantitate" step="0.001" required>
+            <input type="text" id="p_um" placeholder="U.M. (kg, buc)">
+            <input type="number" id="p_pret" placeholder="Preț Unitar" step="0.01" required>
+            <button type="submit" id="btn-submit-stoc" class="btn-save">Salvează în Stoc</button>
+            <button type="button" id="btn-cancel-edit" style="display:none;" onclick="anuleazaEditarea()">Anulează</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table id="tabelStoc">
+            <thead>
+                <tr>
+                    <th>ID</th><th>Nume</th><th>Furnizor</th><th>Primire</th><th>Prod.</th><th>Exp.</th><th>Inițial</th><th>Rămas</th><th>Preț</th><th>Valoare</th><th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- PAGINA 2: CONSUM -->
+<div id="pagina-consumate" class="tab-content">
+    <div class="sticky-header">
+        <h2>🍽️ Consum Zilnic</h2>
+        <form id="formConsum">
+            <select id="c_id" required><option value="">Ingredient</option></select>
+            <select id="c_masa" required>
+                <option value="Dejun">Dejun</option>
+                <option value="Prânz">Prânz</option>
+                <option value="Gustărică">Gustărică</option>
+                <option value="Cină">Cină</option>
+            </select>
+            <input type="text" id="c_fel" placeholder="Mâncare (ex: Borș)" required>
+            <input type="date" id="c_data" required>
+            <input type="number" id="c_cantitate" placeholder="Cantitate" step="0.001" required>
+            <input type="number" id="c_persoane" placeholder="Nr. Persoane">
+            <button type="submit" class="btn-save">Salvează Consum</button>
+        </form>
+    </div>
+    <div class="table-container">
+        <table id="tabelConsum">
+            <thead>
+                <tr>
+                    <th>Data</th><th>Masa</th><th>Fel Mâncare</th><th>Ingredient</th><th>Cantitate</th><th>Persoane</th><th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- PAGINA 3: RAPOARTE -->
+<div id="pagina-rapoarte" class="tab-content">
+    <div class="sticky-header no-print">
+        <h2>📊 Rapoarte Oficiale</h2>
+        <div class="filters">
+            <button onclick="genereazaRaportTabelar()" class="btn-save">📊 Raport 1-31</button>
+            <button onclick="genereazaMeniuComanda()" class="btn-save" style="background:#f39c12">🍽️ Meniu Comandă</button>
+            <button onclick="exportExcel('tabelRezultatRaport', 'Gestiune')" style="background:#217346" class="btn-save">📥 Excel</button>
+            <button onclick="window.print()" class="btn-save" style="background:#6c757d">🖨️ PDF</button>
+        </div>
+    </div>
+    <div id="zona-print">
+        <div id="antet-raport"></div>
+        <table id="tabelRezultatRaport"></table>
+        <div class="semnaturi-zona">
+            <p>Director: __________</p>
+            <p>Contabil: __________</p>
+            <p>Gestionar: __________</p>
+        </div>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
