@@ -169,25 +169,106 @@ function renderTables(stoc, consum) {
 window.genereazaRaportTabelar = async () => {
     const { data: stoc } = await _supabase.from('stoc').select('*');
     const { data: consum } = await _supabase.from('consum').select('*');
-    
-    document.getElementById('antet-raport').innerHTML = `<h2>SITUAȚIE CUMULATIVĂ CONSUM - LUNA CURENTĂ</h2>`;
-    let h = '<thead><tr><th>Produs</th><th>UM</th>';
-    for(let i=1; i<=31; i++) h += `<th>${i}</th>`;
-    h += '<th>Total</th></tr></thead><tbody>';
-    
-    stoc.forEach(p => {
-        let totalP = 0;
-        h += `<tr><td style="text-align:left">${p.nume}</td><td>${p.um}</td>`;
-        for(let i=1; i<=31; i++) {
-            const ziQ = consum.filter(c => c.id_produs === p.p_id && new Date(c.data).getDate() === i).reduce((s,c) => s + Number(c.cantitate), 0);
-            totalP += ziQ;
-            h += `<td>${ziQ || ''}</td>`;
-        }
-        h += `<td><b>${totalP.toFixed(2)}</b></td></tr>`;
-    });
-    document.getElementById('tabelRezultatRaport').innerHTML = h + '</tbody>';
-};
 
+    // 🟨 ANTET OFICIAL (ca în formular)
+    document.getElementById('antet-raport').innerHTML = `
+        <div style="text-align:right; font-size:11px;">
+            Aprobat prin ordinul<br>
+            Ministerului Finanțelor<br>
+            nr. 216 din 28.12.2015
+        </div>
+
+        <h3 style="text-align:center; margin-top:10px;">
+            SITUAȚIE CUMULATIVĂ PRIVIND<br>
+            CONSUMUL DE PRODUSE ALIMENTARE
+        </h3>
+
+        <p style="text-align:center;">
+            Luna: __________
+        </p>
+    `;
+
+    let h = `
+    <thead>
+        <tr>
+            <th rowspan="2">Denumirea produselor</th>
+            <th rowspan="2">UM</th>
+            <th colspan="31">Zilele lunii</th>
+            <th rowspan="2">Sold început</th>
+            <th rowspan="2">Total primit</th>
+            <th rowspan="2">Consum total</th>
+            <th rowspan="2">Stoc rămas</th>
+            <th rowspan="2">Preț</th>
+            <th rowspan="2">Total consum (lei)</th>
+            <th rowspan="2">Total rămas</th>
+        </tr>
+        <tr>
+    `;
+
+    for (let i = 1; i <= 31; i++) {
+        h += `<th>${i}</th>`;
+    }
+
+    h += `</tr></thead><tbody>`;
+
+    let totalGeneralConsum = 0;
+    let totalGeneralRamas = 0;
+
+    stoc.forEach(p => {
+        let consumTotal = 0;
+        let consumZilnic = Array(31).fill(0);
+
+        consum
+            .filter(c => c.id_produs === p.p_id)
+            .forEach(c => {
+                const zi = new Date(c.data).getDate() - 1;
+                consumZilnic[zi] += Number(c.cantitate);
+            });
+
+        let rand = `<tr><td style="text-align:left">${p.nume}</td><td>${p.um}</td>`;
+
+        consumZilnic.forEach(val => {
+            rand += `<td>${val ? val.toFixed(2) : ''}</td>`;
+            consumTotal += val;
+        });
+
+        const soldInitial = Number(p.cantitate || 0);
+        const totalPrimit = Number(p.cantitate || 0);
+        const stocFinal = Number(p.ramas || 0);
+        const pret = Number(p.pret || 0);
+
+        const totalConsumLei = consumTotal * pret;
+        const totalRamasLei = stocFinal * pret;
+
+        totalGeneralConsum += totalConsumLei;
+        totalGeneralRamas += totalRamasLei;
+
+        rand += `
+            <td>${soldInitial.toFixed(2)}</td>
+            <td>${totalPrimit.toFixed(2)}</td>
+            <td><b>${consumTotal.toFixed(2)}</b></td>
+            <td>${stocFinal.toFixed(2)}</td>
+            <td>${pret.toFixed(2)}</td>
+            <td>${totalConsumLei.toFixed(2)}</td>
+            <td>${totalRamasLei.toFixed(2)}</td>
+        `;
+
+        rand += `</tr>`;
+        h += rand;
+    });
+
+    // 🟩 TOTAL GENERAL (foarte important)
+    h += `
+        <tr style="background:#ddd; font-weight:bold;">
+            <td colspan="36">TOTAL GENERAL</td>
+            <td>${totalGeneralConsum.toFixed(2)}</td>
+            <td>${totalGeneralRamas.toFixed(2)}</td>
+        </tr>
+    `;
+
+    h += `</tbody>`;
+    document.getElementById('tabelRezultatRaport').innerHTML = h;
+};
 window.genereazaMeniuComanda = async () => {
     const dataA = prompt("Introdu data (AAAA-LL-ZZ):", new Date().toISOString().split('T')[0]);
     if(!dataA) return;
