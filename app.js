@@ -177,6 +177,9 @@ window.genereazaRaportTabelar = async () => {
             Ministerului Finanțelor<br>
             nr. 216 din 28.12.2015
         </div>
+         <div style="text-align:left; font-size:11px;">
+           CCSP „Căldura casei” or. Drochia
+         </div>
 
         <h3 style="text-align:center; margin-top:10px;">
             SITUAȚIE CUMULATIVĂ PRIVIND<br>
