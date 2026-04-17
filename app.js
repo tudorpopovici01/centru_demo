@@ -263,7 +263,7 @@ window.genereazaRaportTabelar = async () => {
     // 🟩 TOTAL GENERAL (foarte important)
     h += `
         <tr style="background:#ddd; font-weight:bold;">
-            <td colspan="36">TOTAL GENERAL</td>
+            <td colspan="38">TOTAL GENERAL</td>
             <td>${totalGeneralConsum.toFixed(2)}</td>
             <td>${totalGeneralRamas.toFixed(2)}</td>
         </tr>
