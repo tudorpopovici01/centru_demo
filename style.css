@@ -46,7 +46,50 @@ th { background: #eee; position: sticky; top: 0; }
     .sticky-header h2 { font-size: 16px; margin: 0; }
 }
 
-@media print { .no-print, nav, .sticky-header { display: none !important; } .tab-content { display: block !important; } .semnaturi-zona { display: flex; justify-content: space-between; margin-top: 50px; } }
+@media print {
+  /* 1. Elimină fizic elementele care nu au ce căuta în PDF */
+  
+  nav, .sticky-header, button, .btn, .no-print, .filters-area {
+    display: none !important;
+  }
+
+  /* 2. Ascunde tot restul conținutului pentru a izola raportul */
+  body * {
+    visibility: hidden;
+  }
+
+  /* 3. Activează doar containerul raportului și tot ce e în el */
+  #pagina-rapoarte, 
+  #pagina-rapoarte * {
+    visibility: visible;
+  }
+
+  /* 4. Resetăm poziționarea  */
+  #pagina-rapoarte {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: block !important; /* Asigură-te că e vizibil ca bloc */
+  }
+
+  /* 5. Ajustări de curățenie pentru tabelele din raport */
+  #pagina-rapoarte table {
+    width: 100% !important;
+    border-collapse: collapse;
+  }
+
+  /* 6. Zona de semnături  */
+  .semnaturi-zona {
+    display: flex !important;
+    justify-content: space-between;
+    margin-top: 50px;
+    visibility: visible !important;
+  }
+}               
+
 
 /* ===================== STIL FORMULAR OFICIAL ===================== */
 
